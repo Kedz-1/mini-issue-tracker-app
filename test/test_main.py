@@ -1,5 +1,5 @@
 import pytest
-from src.main import create_issue, app
+from src.main import app
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 

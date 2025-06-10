@@ -91,3 +91,4 @@ def test_get_issue_by_id_returns_404_when_id_not_found(client, example):
 
     assert response.status_code == 404
     assert response.json()['detail'] == 'Issue not found.'
+
