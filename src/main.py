@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from models import Issue
+from src.models import Issue
 from typing import List
 from uuid import uuid4
 
@@ -133,4 +133,22 @@ async def get_issue_by_id(issue_id: str):
     # Returns the specified issue that matches the id 
     else:
         return issues[issue_id]
+
+
+@app.delete('/issues/{issue_id}')
+async def delete_issue(issue_id):
+
+    if issue_id not in issues:
+        raise HTTPException(
+            status_code=404,
+            detail= 'Issue not found'
+        )
+    
+    else:
+        del issues[issue_id]
+        return{
+            'message': f'Ticket has been deleted: {issue_id}'
+        }
+
+
 
