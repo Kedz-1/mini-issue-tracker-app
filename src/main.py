@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from src.models import Issue
+from src.models import Patch
 from typing import List
 from uuid import uuid4
 
@@ -138,12 +139,65 @@ async def get_issue_by_id(issue_id: str):
 @app.delete('/issues/{issue_id}')
 async def delete_issue(issue_id):
 
+    '''
+    Deletes a specified issue by its ID.
+
+    Args:
+        issue_id (str) - The UUID of the issue to retrieve.
+
+    Returns:
+        A message confirming that the ticket has been deleted with the issue ID
+    
+    Raises:
+        HTTP exception if issue not found
+
+    
+    Example Issues:
+    [
+        {
+            "id": "a6f0f11b-6820-4ca5-b7bb-ec3874f0dd1f",
+            "title": "This is an example bug ",
+            "description": "This is a test bug",
+            "status": "Open"
+        },
+        {
+            "id": "f48c7aa4-ac96-498c-84ec-0029befb4103",
+            "title": "This is an example bug number 2",
+            "description": "This is another test bug",
+            "status": "Open"
+        }
+    ]
+
+    Example input: DELETE http://127.0.0.1:8000/issues/a6f0f11b-6820-4ca5-b7bb-ec3874f0dd1f
+
+
+    Example response:
+
+    {
+	"message": "Ticket has been deleted: a6f0f11b-6820-4ca5-b7bb-ec3874f0dd1f"
+    }
+
+
+    Example Input: GET http://127.0.0.1:8000
+    [
+        {
+            "id": "f48c7aa4-ac96-498c-84ec-0029befb4103",
+            "title": "This is an example bug number 2",
+            "description": "This is another test bug",
+            "status": "Open"
+        }
+    ]
+
+    '''
+
+    # Conditional statement where if the issue_id is not found a HTTP Exception is raised with a message mentioning this.
     if issue_id not in issues:
         raise HTTPException(
             status_code=404,
             detail= 'Issue not found'
         )
     
+    # Deletes the specified issue and returns a message that it has been deleted with the ticket ID
     else:
         del issues[issue_id]
         return{
@@ -152,3 +206,15 @@ async def delete_issue(issue_id):
 
 
 
+
+@app.patch('/issues/{issue_id}', response_model=Issue)
+async def update_issues(issue_id, patch_data:Patch):
+
+    if issue_id not in issues:
+        raise HTTPException(
+            status_code=404,
+            detail= 'Issue not found'
+        )
+    
+    else:
+        return issues[issue_id]

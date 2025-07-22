@@ -8,3 +8,8 @@ class Issue(BaseModel):
     status:str | None = "Open"
 
  
+class Patch(BaseModel):
+   id:Optional[str] = None
+   title:Optional[str] = None
+   description:str = None
+   status:str | None = "Open"
