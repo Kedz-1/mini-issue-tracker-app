@@ -215,6 +215,15 @@ async def update_issues(issue_id, patch_data:Patch):
             status_code=404,
             detail= 'Issue not found'
         )
+
+    stored_issues = issues[issue_id]
+    patch_dict = patch_data.dict(exclude_unset = True)
     
-    else:
-        return issues[issue_id]
+    for key, value in patch_dict.items():
+        setattr(stored_issues, key, value)
+    
+    issues[issue_id] = stored_issues
+
+    return stored_issues
+    
+        
