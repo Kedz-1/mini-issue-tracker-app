@@ -13,3 +13,6 @@ class Patch(BaseModel):
    title:Optional[str] = None
    description:str = None
    status:str | None = "Open"
+
+   class Config:
+    extra = 'forbid'
