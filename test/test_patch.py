@@ -48,3 +48,32 @@ def test_update_issue_updates_in_memory(client, example):
     expected = 'Closed'
 
     assert status == expected
+
+
+def test_update_issue_updates_multiple_issues(client, example):
+
+    result = client.post('/issues', json=example)
+
+    result_id = result.json()['id']
+    
+    response = client.patch(f'/issues/{result_id}', json={'status': 'Closed', 'title': 'updated_example_bug'})
+    
+    status = client.get(f'/issues/{result_id}').json()['status']
+    title = client.get(f'/issues/{result_id}').json()['title']
+
+    assert status == 'Closed'
+    assert title == 'updated_example_bug'
+    assert response.status_code == 200
+
+
+def test_update_issue_raises_422_on_empty_json(client, example):
+    
+    result = client.post('/issues', json=example)
+
+    result_id = result.json()['id']
+
+    response = client.patch(f'/issues/{result_id}', json={'nonexistent':'field'})
+
+    assert response.status_code == 422
+
+ 
