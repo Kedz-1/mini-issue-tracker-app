@@ -125,7 +125,7 @@ async def get_issue_by_id(issue_id: str):
 
     '''
 
-    # Conditional statement where if the issue_id is not found a HTTP Exception is raised with a message mentioning this.
+    # Conditional statement where if the issue_id is not found a HTTP Exception is raised with a message mentioning this
     if issue_id not in issues:
         raise HTTPException(
             status_code = 404,
@@ -190,7 +190,7 @@ async def delete_issue(issue_id):
 
     '''
 
-    # Conditional statement where if the issue_id is not found a HTTP Exception is raised with a message mentioning this.
+    # Conditional statement where if the issue_id is not found a HTTP Exception is raised with a message mentioning this
     if issue_id not in issues:
         raise HTTPException(
             status_code=404,
@@ -210,18 +210,59 @@ async def delete_issue(issue_id):
 @app.patch('/issues/{issue_id}', response_model=Issue)
 async def update_issues(issue_id, patch_data:Patch):
 
+    '''
+    Updates one or more fields of an issue by its ID
+
+    Args:
+        issue_id (str) - The UUID of the issue to retrieve.
+        patch_data(Pach) - Fields to update provided as a Pydantic model
+
+    Returns:
+        The updated issue
+
+    Raises:
+        HTTP Exception if issue not found
+
+
+    Example Issue:
+        {
+            "id": "a6f0f11b-6820-4ca5-b7bb-ec3874f0dd1f",
+            "title": "This is an example bug ",
+            "description": "This is a test bug",
+            "status": "Open"
+        }
+
+    Example Input:
+        {
+        "status": "Closed",
+        "description": "Example patch"
+        }
+    
+    Example Response:
+        {
+            "id": "a6f0f11b-6820-4ca5-b7bb-ec3874f0dd1f",
+            "title": "This is an example bug ",
+            "description": "Example patch",
+            "status": "Closed"
+        }
+    '''
+
+    # Conditional statement where if the issue_id is not found a HTTP Exception is raised with a message mentioning this.
     if issue_id not in issues:
         raise HTTPException(
             status_code=404,
             detail= 'Issue not found'
         )
 
+    # Stores existing issues in a variable and saves input as a dictionary
     stored_issues = issues[issue_id]
     patch_dict = patch_data.dict(exclude_unset = True)
     
+    # Replaces key, value with input
     for key, value in patch_dict.items():
         setattr(stored_issues, key, value)
     
+    # Saves the updated issues back to the issue list
     issues[issue_id] = stored_issues
 
     return stored_issues
